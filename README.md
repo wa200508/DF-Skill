@@ -31,12 +31,14 @@ and append `--arrays /config/arrays.json --results-dir /results`. On rootless
 Docker, use `--user 0:0` for a host-owned results mount; that UID maps to the
 calling user, not host root. On rootful Docker use your host UID:GID when needed.
 
-The first GHCR publication may require the account owner to mark the package
-public in GitHub package settings before anonymous pulls are possible.
+CI verifies anonymous pulls of each published image. The independent image's
+public pull was checked successfully; no registry login is needed.
 
 ## Develop and test
 
 ```bash
+git clone https://github.com/wa200508/DF-Skill.git
+cd DF-Skill
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements-lock.txt
