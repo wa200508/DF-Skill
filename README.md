@@ -112,3 +112,13 @@ See [LICENSE](LICENSE), [NOTICE](NOTICE), the retained original MIT attribution
 in [licenses/airsim-rf-MIT.txt](licenses/airsim-rf-MIT.txt), and upstream protocol
 notices in `third_party/`. Selecting the same license does not imply Government
 authorship of DF-Skill.
+
+
+## Skill-owned dashboard display
+
+[display.py](src/df_skill/display.py)
+owns the plots, labels, units, scales, receiver selection and result bindings.
+`GET /display` serves the description; status and timestamped results include it
+as `display`. The dashboard renders those primitives without knowing which RF
+algorithm produced them. See [the display contract and extension guide](docs/skill-display.md).
+Saved results carry their view description for offline synchronized playback.

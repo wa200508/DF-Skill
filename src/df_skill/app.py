@@ -22,6 +22,7 @@ import numpy as np
 from .music import estimate_bearing, read_arrays, frequency_psd, spatial_spectrum
 from .sample_stream import iter_stream
 from .results import ResultWriter
+from .display import describe_display
 
 
 class DirectionFindingSkill:
@@ -29,6 +30,7 @@ class DirectionFindingSkill:
         self.arrays=read_arrays(arrays);self.lock=threading.Lock();self.started=time.monotonic()
         self.state={'status':'starting','ingress_ready':False,'payload_bytes':0,'complex_samples':0,'complete_windows':0,'payload_bytes_per_second':0.,'bearings':[],'history':[]}
         self.results=ResultWriter(results_dir) if results_dir is not None else None
+        self.state['display']=describe_display(self.arrays)
         self.mode=4;self.traffic=deque();self.history=deque(maxlen=1000);self.waterfall=deque(maxlen=60);self.frames=deque(maxlen=128)
 
     def snapshot(self,epoch_ns=None,*,compact=False):
@@ -173,7 +175,8 @@ def main():
         def do_GET(self):
             url=urlsplit(self.path)
             try:
-                if url.path in ('/health','/status'):state=skill.snapshot()
+                if url.path=='/display':state=describe_display(skill.arrays)
+                elif url.path in ('/health','/status'):state=skill.snapshot()
                 elif url.path.startswith('/frames/'):state=skill.snapshot(int(url.path.removeprefix('/frames/')),
                     compact=parse_qs(url.query).get('compact')==['1'])
                 elif url.path.startswith('/epochs/'):state=skill.epoch_status(int(url.path.removeprefix('/epochs/')))

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "df-skill"
-version = "0.1.0"
+version = "0.3.0"
 description = "Direction Finding RF Skill for calibrated complex-voltage receiver streams"
 readme = "README.md"
 requires-python = ">=3.10"

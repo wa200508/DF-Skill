@@ -56,6 +56,8 @@ def qualify():
                     if process.poll() is not None or time.monotonic()>deadline:
                         log.seek(0);raise AssertionError('Independent skill failed: '+log.read())
                     time.sleep(.05)
+                with request(f'http://127.0.0.1:{http}/display',timeout=2) as response:description=json.load(response)
+                assert description['schema_version']==1 and any(p['type']=='polar' for p in description['panels'])
                 rng=np.random.default_rng(444);angle=20.;phase=np.exp(2j*np.pi*carrier/299792458.*offsets*np.sin(np.deg2rad(angle)))
                 with socket.create_connection(('127.0.0.1',iq),timeout=10) as connection:
                     writer=SampleStreamWriter(connection,carrier_hz=carrier)
@@ -72,6 +74,7 @@ def qualify():
                         archive.write_window(blocks)
                         assert writer.commit_window()==epoch
                         result=json.loads((root/'results'/f'{epoch}.json').read_text())
+                        assert result['display']==description
                         assert result['timestamp_ns']==epoch and 'sim_time_ns' not in result
                         assert all(b['detected'] and abs(b['angle_deg']-angle)<.2 for b in result['bearings'])
                         expected_bearings.append(result['bearings'])
@@ -92,7 +95,7 @@ def qualify():
                 return {'status':'passed','scope':'standalone CPU receiver image, generic source buffers, real TCP/MUSIC/result journal',
                     'source_dependencies_absent':list(FORBIDDEN),'carrier_hz':carrier,'sample_rate_hz':fs,
                     'channels':8,'windows':2,'samples_per_channel':2*count,'expected_angle_deg':angle,
-                    'receiver_control_configuration_checked':True,
+                    'receiver_control_configuration_checked':True,'skill_display_discovered_and_archived':True,
                     'lossless_archive_replayed_to_unmodified_skill':True,
                     'simulator_or_truth_available':False,'physical_hardware_tested':False}
             finally:
