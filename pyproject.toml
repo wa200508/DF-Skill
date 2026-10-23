@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "df-skill"
+version = "0.1.0"
+description = "Direction Finding RF Skill for calibrated complex-voltage receiver streams"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "licenses/*.txt", "third_party/ams-squall/LICENSE"]
+dependencies = ["numpy>=1.26", "scipy>=1.14.1", "doa-py==0.5.0", "grpcio>=1.84,<2", "protobuf>=7.36.2,<8"]
+
+[project.scripts]
+direction-finding-rf-skill = "df_skill.app:main"
+df-skill = "df_skill.app:main"
+
+[project.optional-dependencies]
+test = ["pytest>=8.3"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
