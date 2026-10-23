@@ -48,3 +48,9 @@ jobs:
           docker push "$image:sha-${{ github.sha }}"
           docker tag df-skill:test "$image:latest"
           docker push "$image:latest"
+      - name: Verify anonymous public pull
+        if: github.event_name != 'pull_request'
+        run: |
+          anonymous_config=$(mktemp -d)
+          trap 'rm -rf "$anonymous_config"' EXIT
+          docker --config "$anonymous_config" pull ghcr.io/wa200508/df-skill:sha-${{ github.sha }}
