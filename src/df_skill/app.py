@@ -127,7 +127,7 @@ class DirectionFindingSkill:
                         def validate_end():
                             if pending:raise ValueError('Stream completed with incomplete coherent array')
                             if not completed:raise ValueError('Stream contains no coherent array windows')
-                        for block in iter_stream(conn,validate_end=validate_end,validate_window=validate_end):
+                        for block in iter_stream(conn,validate_end=validate_end,validate_window=validate_end,allow_idle=True):
                             if block.receiver not in names or block.receiver in pending:raise ValueError('Unknown or duplicate array channel')
                             if epoch is None:epoch=block.timestamp_ns
                             if block.timestamp_ns!=epoch:raise ValueError('Incomplete array window before next epoch')

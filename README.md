@@ -55,7 +55,7 @@ and replaying exact I/Q without importing a simulator.
 The existing **receiver TCP v2** protocol is retained: complex float32 input-
 referred volts, channel IDs, acquisition timestamps, sample rate/carrier,
 clipping metadata and coherent-window commits with acknowledgements.
-[The wire contract](https://github.com/wa200508/airsim-rf/blob/main/docs/iq-stream.md)
+[The wire contract](https://github.com/wa200508/airsim-rf/blob/main/docs/reference/iq-stream.md)
 is versioned independently of an acquisition source.
 
 Receiver configuration is schema v1: sample_rate_hz, carrier_hz and two sites,
@@ -122,3 +122,13 @@ owns the plots, labels, units, scales, receiver selection and result bindings.
 as `display`. The dashboard renders those primitives without knowing which RF
 algorithm produced them. See [the display contract and extension guide](docs/skill-display.md).
 Saved results carry their view description for offline synchronized playback.
+
+## Idle acquisition and transfer timeouts
+
+An established receiver stream may wait indefinitely between frames, including
+while an acquisition source is paused. Disconnects still fail immediately, and
+incomplete frame transfers retain a finite socket timeout. This is generic
+receiver behavior for hardware, replay and simulation; no source clock or
+algorithm-specific heartbeat is required. Processing acknowledgements remain
+bounded by the sender's timeout. Restart the skill for a new experiment after
+a failed stream.
